@@ -27,7 +27,7 @@ runs:
     - id: run-levitate
       run: |
         # RUN levitate is-compatible. Save the output to .levitate_output
-        npx --yes @grafana/levitate@latest is-compatible --path ${{ inputs.module }} --target ${{ inputs.targets }} | tee .levitate_output
+        npx --yes @grafana/levitate@latest is-compatible --path ${{ inputs.module }} --target ${{ inputs.targets }} --markdown | tee .levitate_output
         # Save the command exit code for latesr use
         CODE=${PIPESTATUS[0]}
         # Capture levitate output in an ENV variable
