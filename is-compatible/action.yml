@@ -25,7 +25,6 @@ runs:
       with:
         node-version: 16
     - id: run-levitate
-      # continue-on-error: true
       run: |
         # RUN levitate is-compatible. Save the output to .levitate_output
         npx --yes @grafana/levitate@latest is-compatible --path ${{ inputs.module }} --target ${{ inputs.targets }} --markdown | tee .levitate_output || true
