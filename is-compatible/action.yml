@@ -28,7 +28,7 @@ runs:
       # continue-on-error: true
       run: |
         # RUN levitate is-compatible. Save the output to .levitate_output
-        npx --yes @grafana/levitate@latest is-compatible --path ${{ inputs.module }} --target ${{ inputs.targets }} --markdown | tee .levitate_output | true
+        npx --yes @grafana/levitate@latest is-compatible --path ${{ inputs.module }} --target ${{ inputs.targets }} --markdown | tee .levitate_output || true
         echo "Testing github"
         # Save the command exit code for latesr use
         CODE=${PIPESTATUS[0]}
