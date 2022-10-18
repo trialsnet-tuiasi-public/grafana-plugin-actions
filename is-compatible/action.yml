@@ -28,7 +28,7 @@ runs:
       run: |
         # RUN levitate is-compatible. Save the output to .levitate_output
         npx --yes @grafana/levitate@latest is-compatible --path ${{ inputs.module }} --target ${{ inputs.targets }} --markdown | tee .levitate_output || true
-        # Save the command exit code for latesr use
+        # Detect the exit code based on the levitate output
         CODE=$(if [[ -n $(cat .levitate_output | grep "not fully compatible") ]]; then echo 1; else echo 0; fi)
         # Capture levitate output in an ENV variable
         IS_COMPATIBLE=$(cat .levitate_output)
