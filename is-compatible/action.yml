@@ -1,13 +1,17 @@
-name: 'Levitate is compatible'
-description: 'Check if your grafana plugin code is compatible with grafana latest APIs'
+name: "Levitate is compatible"
+description: "Check if your grafana plugin code is compatible with grafana latest APIs"
 
 inputs:
   module:
     required: true
-    description: 'Path to your plugin module.ts file. Usually ./src/module.ts'
+    description: "Path to your plugin module.ts file. Usually ./src/module.ts"
   comment-pr:
     description: "If running the action inside a pull_request write a comment with the check output. yes or no"
     default: "yes"
+    required: false
+  skip-comment-if-compatible:
+    description: "If comment-pr is enabled, skip the message if the result is favorable. yes or no"
+    default: "no"
     required: false
   fail-if-incompatible:
     description: "Fail the job if levitate finds incompatibilities. yes or no"
@@ -19,8 +23,8 @@ inputs:
     required: false
 
 runs:
-  using: 'composite'
-  steps: 
+  using: "composite"
+  steps:
     - uses: actions/setup-node@v3
       with:
         node-version: 16
@@ -43,10 +47,10 @@ runs:
     # find the current PR (if running in one)
     - uses: jwalton/gh-find-current-pr@e12d66bc9ecc4fdcde07b0f70a3cb68ce7e4d807
       id: finder
-      if: inputs.comment-pr == 'yes'
+      if: (inputs.comment-pr == 'yes' && steps.run-levitate.outputs.code == 1) || (inputs.comment-pr == 'yes' && inputs.skip-comment-if-compatible == 'no')
     # write a comment with levitate output
     - uses: marocchino/sticky-pull-request-comment@e3c0353c9ad3f0cad0fbab901e5bcd7d04c6e97b
-      if: inputs.comment-pr == 'yes'
+      if: (inputs.comment-pr == 'yes' && steps.run-levitate.outputs.code == 1) || (inputs.comment-pr == 'yes' && inputs.skip-comment-if-compatible == 'no')
       with:
         number: ${{ steps.finder.outputs.pr }}
         message: |
