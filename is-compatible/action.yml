@@ -41,8 +41,8 @@ runs:
         IS_COMPATIBLE="${IS_COMPATIBLE//$'\n'/'%0A'}"
         IS_COMPATIBLE="${IS_COMPATIBLE//$'\r'/'%0D'}"
         # Save outputs in github contexts
-        echo "::set-output name=is-compatible-stdout::$IS_COMPATIBLE"
-        echo "::set-output name=is-compatible-exit-code::$CODE"
+        echo "is-compatible-stdout=$IS_COMPATIBLE" >> $GITHUB_OUTPUT
+        echo "is-compatible-exit-code=$CODE" >> $GITHUB_OUTPUT
       shell: "bash"
     # find the current PR (if running in one)
     - uses: jwalton/gh-find-current-pr@e12d66bc9ecc4fdcde07b0f70a3cb68ce7e4d807
