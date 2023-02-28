@@ -36,20 +36,19 @@ runs:
         CODE=$(if [[ -n $(cat .levitate_output | grep "not fully compatible") ]]; then echo 1; else echo 0; fi)
         # Capture levitate output in an ENV variable
         IS_COMPATIBLE=$(cat .levitate_output)
-        # Github action specific: Escape special characters to save it in a github output context
-        IS_COMPATIBLE="${IS_COMPATIBLE//'%'/'%25'}"
-        IS_COMPATIBLE="${IS_COMPATIBLE//$'\n'/'%0A'}"
-        IS_COMPATIBLE="${IS_COMPATIBLE//$'\r'/'%0D'}"
         # Save outputs in github contexts
-        echo "::set-output name=is-compatible-stdout::$IS_COMPATIBLE"
-        echo "::set-output name=is-compatible-exit-code::$CODE"
+        echo "is-compatible-stdout<<EOF" >> $GITHUB_OUTPUT
+        echo "$IS_COMPATIBLE" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+        echo "is-compatible-exit-code=$CODE" >> $GITHUB_OUTPUT
       shell: "bash"
     # find the current PR (if running in one)
-    - uses: jwalton/gh-find-current-pr@e12d66bc9ecc4fdcde07b0f70a3cb68ce7e4d807
+    - uses: jwalton/gh-find-current-pr@v1
       id: finder
       if: (inputs.comment-pr == 'yes' && steps.run-levitate.outputs.code == 1) || (inputs.comment-pr == 'yes' && inputs.skip-comment-if-compatible == 'no')
     # write a comment with levitate output
-    - uses: marocchino/sticky-pull-request-comment@e3c0353c9ad3f0cad0fbab901e5bcd7d04c6e97b
+    - uses: marocchino/sticky-pull-request-comment@v2
       if: (inputs.comment-pr == 'yes' && steps.run-levitate.outputs.code == 1) || (inputs.comment-pr == 'yes' && inputs.skip-comment-if-compatible == 'no')
       with:
         number: ${{ steps.finder.outputs.pr }}
