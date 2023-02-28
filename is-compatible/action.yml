@@ -41,7 +41,10 @@ runs:
         # IS_COMPATIBLE="${IS_COMPATIBLE//$'\n'/'%0A'}"
         # IS_COMPATIBLE="${IS_COMPATIBLE//$'\r'/'%0D'}"
         # Save outputs in github contexts
-        echo "is-compatible-stdout=$IS_COMPATIBLE" >> $GITHUB_OUTPUT
+        echo "is-compatible-stdout<<EOF" >> $GITHUB_OUTPUT
+        echo "$IS_COMPATIBLE" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
         echo "is-compatible-exit-code=$CODE" >> $GITHUB_OUTPUT
       shell: "bash"
     # find the current PR (if running in one)
