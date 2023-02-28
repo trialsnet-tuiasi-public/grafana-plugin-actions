@@ -36,10 +36,6 @@ runs:
         CODE=$(if [[ -n $(cat .levitate_output | grep "not fully compatible") ]]; then echo 1; else echo 0; fi)
         # Capture levitate output in an ENV variable
         IS_COMPATIBLE=$(cat .levitate_output)
-        # Github action specific: Escape special characters to save it in a github output context
-        # IS_COMPATIBLE="${IS_COMPATIBLE//'%'/'%25'}"
-        # IS_COMPATIBLE="${IS_COMPATIBLE//$'\n'/'%0A'}"
-        # IS_COMPATIBLE="${IS_COMPATIBLE//$'\r'/'%0D'}"
         # Save outputs in github contexts
         echo "is-compatible-stdout<<EOF" >> $GITHUB_OUTPUT
         echo "$IS_COMPATIBLE" >> $GITHUB_OUTPUT
