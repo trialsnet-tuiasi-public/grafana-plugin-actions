@@ -30,6 +30,7 @@ runs:
         then
           echo "has-backend=true" >> $GITHUB_OUTPUT
         fi
+      shell: bash
 
     - name: Test backend
       if: steps.check-for-backend.outputs.has-backend == 'true'
@@ -50,6 +51,7 @@ runs:
         echo Please generate a Grafana access policy token: https://grafana.com/developers/plugin-tools/publish-a-plugin/sign-a-plugin#generate-an-access-policy-token
         echo Once done please follow the instructions found here: https://github.com/${{github.repository}}/blob/main/README.md#using-github-actions-release-workflow
       if: ${{ env.GRAFANA_ACCESS_POLICY_TOKEN == '' }}
+      shell: bash
 
     - name: Sign plugin
       run: ${{ github.action_path }}/pm.sh sign
@@ -74,15 +76,18 @@ runs:
         echo "archive-sha1sum=${GRAFANA_PLUGIN_ARTIFACT_SHA1SUM}" >> $GITHUB_OUTPUT
 
         echo "github-tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+      shell: bash
 
     - name: Read changelog
       id: changelog
       run: |
         awk '/^## / {s++} s == 1 {print}' CHANGELOG.md > release_notes.md
         echo "path=release_notes.md" >> $GITHUB_OUTPUT
+      shell: bash
 
     - name: Check package version
       run: if [ "v${{ steps.metadata.outputs.plugin-version }}" != "${{ steps.metadata.outputs.github-tag }}" ]; then printf "\033[0;31mPlugin version doesn't match tag name\033[0m\n"; exit 1; fi
+      shell: bash
 
     - name: Package plugin
       id: package-plugin
@@ -90,6 +95,7 @@ runs:
         mv dist ${{ steps.metadata.outputs.plugin-id }}
         zip ${{ steps.metadata.outputs.archive }} ${{ steps.metadata.outputs.plugin-id }} -r
         sha1sum ${{ steps.metadata.outputs.archive }} | cut -f1 -d' ' > ${{ steps.metadata.outputs.archive-sha1sum }}
+      shell: bash
 
     - name: Validate plugin
       run: |
@@ -98,6 +104,7 @@ runs:
         go install
         popd
         plugincheck2 -config ./plugin-validator/config/default.yaml ${{ steps.metadata.outputs.archive }}
+      shell: bash
 
     - name: Create Github release
       uses: softprops/action-gh-release@v1
