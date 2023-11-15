@@ -1,0 +1,13 @@
+name: "Grafana Build Plugin"
+description: "Builds a Grafana plugin"
+
+# inputs:
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 20
+    - run: build-packages.sh
+      shell: bash
