@@ -9,5 +9,5 @@ runs:
     - uses: actions/setup-node@v3
       with:
         node-version: 20
-    - run: build-packages.sh
+    - run: ${{ github.action_path }}/build-packages.sh
       shell: bash
