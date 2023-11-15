@@ -1,7 +1,10 @@
 name: "Grafana Build Plugin"
 description: "Builds a Grafana plugin"
 
-# inputs:
+inputs:
+  token:
+    description: "Token for the repository. Can be passed in using `{{ secrets.GITHUB_TOKEN }}`."
+    required: true
 
 runs:
   using: "composite"
@@ -111,6 +114,7 @@ runs:
       with:
         draft: true
         generate_release_notes: true
+        token: ${{ input.token }}
         files: |
           ./${{ steps.metadata.outputs.archive }}
           ./${{ steps.metadata.outputs.archive-sha1sum }}
