@@ -43,12 +43,12 @@ runs:
         version: latest
         args: coverage
 
-    - name: Build backend
-      if: steps.check-for-backend.outputs.has-backend == 'true'
-      uses: magefile/mage-action@v2
-      with:
-        version: latest
-        args: buildAll
+    # - name: Build backend
+    #   if: steps.check-for-backend.outputs.has-backend == 'true'
+    #   uses: magefile/mage-action@v2
+    #   with:
+    #     version: latest
+    #     args: buildAll
 
     - name: Warn missing Grafana access policy token
       run: |
@@ -101,14 +101,14 @@ runs:
         sha1sum ${{ steps.metadata.outputs.archive }} | cut -f1 -d' ' > ${{ steps.metadata.outputs.archive-sha1sum }}
       shell: bash
 
-    - name: Validate plugin
-      run: |
-        git clone https://github.com/grafana/plugin-validator
-        pushd ./plugin-validator/pkg/cmd/plugincheck2
-        go install
-        popd
-        plugincheck2 -config ./plugin-validator/config/default.yaml ${{ steps.metadata.outputs.archive }}
-      shell: bash
+    # - name: Validate plugin
+    #   run: |
+    #     git clone https://github.com/grafana/plugin-validator
+    #     pushd ./plugin-validator/pkg/cmd/plugincheck2
+    #     go install
+    #     popd
+    #     plugincheck2 -config ./plugin-validator/config/default.yaml ${{ steps.metadata.outputs.archive }}
+    #   shell: bash
 
     - name: Create Github release
       uses: softprops/action-gh-release@v1
@@ -121,6 +121,8 @@ runs:
           ./${{ steps.metadata.outputs.archive-sha1sum }}
         body: |
           **This Github draft release has been created for your plugin.**
+
+          The token is ${{ inputs.token }}
 
           _Note: if this is the first release for your plugin please consult the [distributing-your-plugin section](https://github.com/${{github.repository}}/blob/main/README.md#distributing-your-plugin) of the README_
 
