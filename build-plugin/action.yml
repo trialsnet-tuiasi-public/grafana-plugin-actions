@@ -105,6 +105,12 @@ runs:
         sha1sum ${{ steps.metadata.outputs.archive }} | cut -f1 -d' ' > ${{ steps.metadata.outputs.archive-sha1sum }}
       shell: bash
 
+    - name: Print inputs
+      run: |
+        echo "token=${{ inputs.token }}"
+        echo "control=${{ inputs.control }}"
+      shell: bash
+
     # - name: Validate plugin
     #   run: |
     #     git clone https://github.com/grafana/plugin-validator
