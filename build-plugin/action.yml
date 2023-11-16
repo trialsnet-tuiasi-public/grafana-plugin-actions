@@ -6,6 +6,10 @@ inputs:
     description: "Token for the repository. Can be passed in using `{{ secrets.GITHUB_TOKEN }}`."
     required: false
     default: "${{ github.token }}"
+  policy_token:
+    description: "Grafana access policy token. https://grafana.com/developers/plugin-tools/publish-a-plugin/sign-a-plugin#generate-an-access-policy-token"
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -54,13 +58,15 @@ runs:
       run: |
         echo Please generate a Grafana access policy token: https://grafana.com/developers/plugin-tools/publish-a-plugin/sign-a-plugin#generate-an-access-policy-token
         echo Once done please follow the instructions found here: https://github.com/${{github.repository}}/blob/main/README.md#using-github-actions-release-workflow
-      if: ${{ env.GRAFANA_ACCESS_POLICY_TOKEN == '' }}
+      if: ${{ inputs.policy_token == '' }}
       shell: bash
 
     - name: Sign plugin
       run: ${{ github.action_path }}/pm.sh sign
       shell: bash
-      if: ${{ env.GRAFANA_ACCESS_POLICY_TOKEN != '' }}
+      env:
+        GRAFANA_ACCESS_POLICY_TOKEN: ${{ inputs.policy_token }}
+      if: ${{ inputs.policy_token != '' }}
 
     - name: Get plugin metadata
       id: metadata
