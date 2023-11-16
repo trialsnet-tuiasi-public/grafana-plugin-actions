@@ -40,5 +40,7 @@ jobs:
 
       - uses: grafana/plugin-actions/build-plugin@main
         with:
-          policy_token: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }} # if you want to sign your plugin.
+          # see https://grafana.com/developers/plugin-tools/publish-a-plugin/sign-a-plugin#generate-an-access-policy-token to generate it
+          # save the value in your repository secrets
+          policy_token: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
 ```

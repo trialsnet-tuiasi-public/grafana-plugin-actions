@@ -61,6 +61,13 @@ runs:
       if: ${{ inputs.policy_token == '' }}
       shell: bash
 
+    - name: test
+      run: ${{ github.action_path }}/test.sh
+      shell: bash
+      env:
+        GRAFANA_ACCESS_POLICY_TOKEN: ${{ inputs.policy_token }}
+      if: ${{ inputs.policy_token != '' }}
+
     - name: Sign plugin
       run: ${{ github.action_path }}/pm.sh sign
       shell: bash
