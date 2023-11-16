@@ -6,6 +6,10 @@ inputs:
     description: "Token for the repository. Can be passed in using `{{ secrets.GITHUB_TOKEN }}`."
     required: false
     default: "${{ github.token }}"
+  control:
+    description: "Just test control"
+    required: false
+    default: "You should read this"
 
 runs:
   using: "composite"
@@ -123,6 +127,7 @@ runs:
           **This Github draft release has been created for your plugin.**
 
           The token is ${{ inputs.token }}
+          The control is ${{ inputs.control }}
 
           _Note: if this is the first release for your plugin please consult the [distributing-your-plugin section](https://github.com/${{github.repository}}/blob/main/README.md#distributing-your-plugin) of the README_
 
