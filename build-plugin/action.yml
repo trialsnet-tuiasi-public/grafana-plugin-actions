@@ -10,6 +10,10 @@ inputs:
     description: "Grafana access policy token. https://grafana.com/developers/plugin-tools/publish-a-plugin/sign-a-plugin#generate-an-access-policy-token"
     required: false
     default: ""
+  grafana_token:
+    description: "[deprecated] Grafana API Key to sign a plugin. Prefer `policy_token`."
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -66,6 +70,7 @@ runs:
       shell: bash
       env:
         GRAFANA_ACCESS_POLICY_TOKEN: ${{ inputs.policy_token }}
+        GRAFANA_API_KEY: ${{ inputs.grafana_token }}
       if: ${{ inputs.policy_token != '' }}
 
     - name: Get plugin metadata
