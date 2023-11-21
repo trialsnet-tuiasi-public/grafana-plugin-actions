@@ -22,8 +22,6 @@ fi
 echo "Running '$1' with $pm..."
 if [ "$1" = "install" ]; then
 	"$pm" install
-elif [ "$pm" = "npm" ] || [ "$pm" = "pnpm" ]; then
-	"$pm" run "$1"
 else
-	"$pm" "$1"
+	"$pm" run "$1"
 fi
