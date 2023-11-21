@@ -5,6 +5,7 @@
 
 This repository contains a set of github actions for grafana plugins
 
-# How to use?
+# Available actions
 
-See how to use this action [here](https://github.com/grafana/grafana-plugin-examples#api-compatibility)
+- [is-compatible](is-compatible/README.md)
+- [build-plugin](build-plugin/README.md)
