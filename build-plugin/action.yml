@@ -143,6 +143,6 @@ runs:
           - Click the **Submit Plugin** button
           - Fill in the Plugin Submission form:
             - Paste this [.zip asset link](https://github.com/${{ github.repository }}/releases/download/v${{ steps.metadata.outputs.plugin-version }}/${{ steps.metadata.outputs.archive }}) in the Plugin URL field
-            - Paste this [.zip.sha1 link](https://github.com/$/releases/download/v$/$) in the SHA1 field
+            - Paste this [.zip.sha1 link](https://github.com/${{ github.repository }}/releases/download/v${{ steps.metadata.outputs.plugin-version }}/${{ steps.metadata.outputs.archive-sha1sum }}) in the SHA1 field
 
           Once done please remove these instructions and publish this release.
