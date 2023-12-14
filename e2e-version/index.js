@@ -1,6 +1,7 @@
 const fs = require('fs/promises');
 const core = require('@actions/core');
 const semver = require('semver');
+const path = require('path');
 
 const VersionResolverTypeInput = 'version-resolver-type';
 const MatrixOutput = 'matrix';
@@ -83,7 +84,7 @@ async function getGrafanaStableMinorVersions() {
 }
 
 async function getPluginGrafanaDependency() {
-  const file = await fs.readFile('src/plugin.json', 'utf8');
+  const file = await fs.readFile(path.resolve(path.join(process.cwd(), 'src'), 'plugin.json'), 'utf8');
   const json = JSON.parse(file);
   if (!json.dependencies.grafanaDependency) {
     throw new Error('Could not find plugin grafanaDependency');
