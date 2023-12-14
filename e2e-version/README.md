@@ -1,6 +1,6 @@
 # E2E Grafana version resolver
 
-This GitHub Action resolves what versions of Grafana to use when E2E testing a Grafana plugin in a Github Action.
+This Action resolves what versions of Grafana to use when E2E testing a Grafana plugin in a Github Action.
 
 ## Features
 
