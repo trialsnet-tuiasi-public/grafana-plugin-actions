@@ -29915,35 +29915,33 @@ async function run() {
   }
 }
 
-function getGrafanaStableMinorVersions() {
-  return new Promise(async (resolve) => {
-    const latestMinorVersions = new Map();
+async function getGrafanaStableMinorVersions() {
+  const latestMinorVersions = new Map();
 
-    const response = await fetch('https://grafana.com/api/grafana-enterprise/versions');
-    const json = await response.json();
-    const grafanaVersions = json.items;
+  const response = await fetch('https://grafana.com/api/grafana-enterprise/versions');
+  const json = await response.json();
+  const grafanaVersions = json.items;
 
-    for (const grafanaVersion of grafanaVersions) {
-      // ignore pre-releases
-      if (grafanaVersion.channels.stable !== true) {
-        continue;
-      }
-      const v = semver.parse(grafanaVersion.version);
+  for (const grafanaVersion of grafanaVersions) {
+    // ignore pre-releases
+    if (grafanaVersion.channels.stable !== true) {
+      continue;
+    }
+    const v = semver.parse(grafanaVersion.version);
 
-      const baseVersion = new semver.SemVer(`${v.major}.${v.minor}.0`).toString();
-      if (!latestMinorVersions.has(baseVersion)) {
-        latestMinorVersions.set(baseVersion, v);
-      }
-
-      const maxVersion = latestMinorVersions.get(baseVersion);
-      const cc = maxVersion.compare(v);
-      if (cc < 0) {
-        latestMinorVersions.set(baseVersion, v);
-      }
+    const baseVersion = new semver.SemVer(`${v.major}.${v.minor}.0`).toString();
+    if (!latestMinorVersions.has(baseVersion)) {
+      latestMinorVersions.set(baseVersion, v);
     }
 
-    return resolve(Array.from(latestMinorVersions).map(([_, semver]) => semver));
-  });
+    const maxVersion = latestMinorVersions.get(baseVersion);
+    const cc = maxVersion.compare(v);
+    if (cc < 0) {
+      latestMinorVersions.set(baseVersion, v);
+    }
+  }
+
+  return Array.from(latestMinorVersions).map(([_, semver]) => semver);
 }
 
 async function getPluginGrafanaDependency() {
