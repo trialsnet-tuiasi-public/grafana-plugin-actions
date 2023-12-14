@@ -5,6 +5,7 @@ const path = require('path');
 
 const VersionResolverTypeInput = 'version-resolver-type';
 const MatrixOutput = 'matrix';
+const VERSIONS_LIMIT = 6;
 
 const VersionResolverTypes = {
   PluginGrafanaDependency: 'plugin-grafana-dependency',
@@ -48,10 +49,39 @@ async function run() {
         }
     }
 
+    if (VersionResolverTypes.PluginGrafanaDependency) {
+      // limit the number of versions to 6
+      output = evenlyPickVersions(output, VERSIONS_LIMIT);
+    }
+
     core.setOutput(MatrixOutput, JSON.stringify(output));
   } catch (error) {
     core.setFailed(error.message);
   }
+}
+
+/**
+ * Limits the number of versions to the given @param {number} limit
+ * The first and the last versions are always included. The rest of the versions are picked evenly.
+ *
+ * @param {string[]} allItems
+ * @param {number} limit
+ **/
+function evenlyPickVersions(allItems, limit) {
+  if (allItems.length <= 2 && limit >= allItems.length) {
+    return allItems;
+  }
+
+  const result = [allItems.shift(), allItems.pop()];
+  limit -= 2;
+  const interval = allItems.length / limit;
+
+  for (let i = 0; i < limit; i++) {
+    const evenIndex = Math.floor(i * interval + interval / 2);
+    result.push(allItems[evenIndex]);
+  }
+
+  return semver.rsort(result);
 }
 
 async function getGrafanaStableMinorVersions() {
