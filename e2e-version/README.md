@@ -7,10 +7,10 @@ This Action resolves what versions of Grafana to use when E2E testing a Grafana 
 The action supports two modes.
 
 **plugin-grafana-dependency (default)**
-The will return all minor versions of Grafana that have been released since the version that was specified as grafanaDependency in the plugin.json. This requires the plugin.json file to be placed in the `<root>/src` directory.
+The will return all the latest patch releases of Grafana since the version that was specified as grafanaDependency in the plugin.json. This requires the plugin.json file to be placed in the `<root>/src` directory.
 
 **version-support-policy**
-This will resolve versions according to Grafana's plugin compatibility support policy, meaning it will resolve all minors for the current major version and the last minor of the previous major version.
+This will resolve versions according to Grafana's plugin compatibility support policy, meaning it will resolve all latest patch releases for the current major version and the last minor of the previous major version.
 
 The output of the action is a json array of Grafana minor versions. These can be used to specify a version matrix in a subsequent workflow job. See examples below.
 
