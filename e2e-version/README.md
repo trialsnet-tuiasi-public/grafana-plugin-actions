@@ -78,12 +78,13 @@ jobs:
     needs: setup-matrix
     strategy:
       matrix:
+        # use matrix from output in previous job
         GRAFANA_VERSION: ${{fromJson(needs.setup-matrix.outputs.matrix)}}
     runs-on: ubuntu-latest
     steps:
       ...
       - name: Start Grafana
-        run: docker run --rm -d -p 3000:3000 --name=grafana grafana/grafana:${{ matrix.GRAFANA_VERSION }}; sleep 30
+        run: docker run --rm -d -p 3000:3000 --name=grafana grafana/grafana:${{ matrix.GRAFANA_VERSION }}
       ...
 ```
 
@@ -113,12 +114,13 @@ jobs:
     needs: setup-matrix
     strategy:
       matrix:
+        # use matrix from output in previous job
         GRAFANA_VERSION: ${{fromJson(needs.setup-matrix.outputs.matrix)}}
     runs-on: ubuntu-latest
     steps:
       ...
       - name: Start Grafana
-        run: docker run --rm -d -p 3000:3000 --name=grafana grafana/grafana:${{ matrix.GRAFANA_VERSION }}; sleep 30
+        run: docker run --rm -d -p 3000:3000 --name=grafana grafana/grafana:${{ matrix.GRAFANA_VERSION }}
       ...
 ```
 
