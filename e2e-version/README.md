@@ -7,10 +7,46 @@ This Action resolves what versions of Grafana to use when E2E testing a Grafana 
 The action supports two modes.
 
 **plugin-grafana-dependency (default)**
-The will return all the latest patch releases of Grafana since the version that was specified as grafanaDependency in the plugin.json. This requires the plugin.json file to be placed in the `<root>/src` directory.
+The will return all the latest patch release of every minor version of Grafana since the version that was specified as grafanaDependency in the plugin.json. This requires the plugin.json file to be placed in the `<root>/src` directory.
+
+### Example
+
+At the time of writing, the most recent release of Grafana is 10.2.2. If the plugin has specified >=8.0.0 as `grafanaDependency` in the plugin.json file, the output would be:
+
+```json
+[
+  "10.2.2",
+  "10.1.5",
+  "10.0.9",
+  "9.5.14",
+  "9.4.17",
+  "9.3.16",
+  "9.2.20",
+  "9.1.8",
+  "9.0.8",
+  "8.5.27",
+  "8.4.11",
+  "8.3.11",
+  "8.2.7",
+  "8.1.8",
+  "8.0.7"
+]
+```
+
+Please note that the output changes as new versions of Grafana are being released.
 
 **version-support-policy**
-This will resolve versions according to Grafana's plugin compatibility support policy, meaning it will resolve all latest patch releases for the current major version and the last minor of the previous major version.
+This will resolve versions according to Grafana's plugin compatibility support policy. This means it will resolve the latest patch release for every minor version for the current major version of Grafana, plus the most recent patch release for the last minor of the previous major version of Grafana.
+
+### Example
+
+At the time of writing, the most recent release of Grafana is 10.2.2. The output for `version-support-policy` would be:
+
+```json
+["10.2.2", "10.1.5", "10.0.9", "9.5.14"]
+```
+
+### Output
 
 The output of the action is a json array of Grafana minor versions. These can be used to specify a version matrix in a subsequent workflow job. See examples below.
 
