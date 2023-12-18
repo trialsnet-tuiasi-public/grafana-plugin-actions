@@ -48,7 +48,7 @@ At the time of writing, the most recent release of Grafana is 10.2.2. The output
 
 ### Output
 
-The output of the action is a json array of Grafana minor versions. These can be used to specify a version matrix in a subsequent workflow job. See examples below.
+The result of this action is a JSON array that lists the latest patch version for each Grafana minor version. These values can be employed to define a version matrix in a subsequent workflow job.
 
 ## Workflow example
 
