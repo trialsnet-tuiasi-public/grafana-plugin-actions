@@ -36,7 +36,7 @@ At the time of writing, the most recent release of Grafana is 10.2.2. If the plu
 Please note that the output changes as new versions of Grafana are being released.
 
 **version-support-policy**
-This will resolve versions according to Grafana's plugin compatibility support policy. This means it will resolve the latest patch release for every minor version for the current major version of Grafana, plus the most recent patch release for the last minor of the previous major version of Grafana.
+This will resolve versions according to Grafana's plugin compatibility support policy. Specifically, it retrieves the latest patch release for each minor version within the current major version of Grafana. Additionally, it includes the most recent release for the latest minor version of the previous major Grafana version.```
 
 ### Example
 
