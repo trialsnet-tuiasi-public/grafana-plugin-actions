@@ -9,3 +9,4 @@ This repository contains a set of github actions for grafana plugins
 
 - [is-compatible](is-compatible/README.md)
 - [build-plugin](build-plugin/README.md)
+- [e2e-version](e2e-version/README.md)
