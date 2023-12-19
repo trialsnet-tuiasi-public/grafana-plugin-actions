@@ -14,7 +14,7 @@ const VersionResolverTypes = {
 
 async function run() {
   try {
-    let versionResolverType = core.getInput(VersionResolverTypeInput) || VersionResolverTypes.PluginGrafanaDependency;
+    const versionResolverType = core.getInput(VersionResolverTypeInput) || VersionResolverTypes.PluginGrafanaDependency;
     const availableGrafanaVersions = await getGrafanaStableMinorVersions();
     if (availableGrafanaVersions.length === 0) {
       core.setFailed('Could not find any stable Grafana versions');
@@ -49,11 +49,12 @@ async function run() {
         }
     }
 
-    if (VersionResolverTypes.PluginGrafanaDependency) {
+    if (versionResolverType === VersionResolverTypes.PluginGrafanaDependency) {
       // limit the number of versions to 6
       output = evenlyPickVersions(output, VERSIONS_LIMIT);
     }
 
+    console.log('Resolved versions: ', output);
     core.setOutput(MatrixOutput, JSON.stringify(output));
   } catch (error) {
     core.setFailed(error.message);
