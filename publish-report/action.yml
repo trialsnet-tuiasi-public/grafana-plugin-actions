@@ -2,10 +2,14 @@ name: "Publish Playwright report"
 description: "Publish a Playwright report to GCS"
 
 inputs:
+  grafana-version:
+    required: true
+    description: "The Grafana version used in the test session that generated the report."
   path:
-    default: "playwright-report"
+    default: "playwright-report/"
     required: false
-    description: "Path to the folder to publish. Defaults to 'playwright-report'"
+    description: "Path to the folder to publish. Defaults to 'playwright-report/'"
+
 
 runs:
   using: "composite"
@@ -28,8 +32,11 @@ runs:
       shell: bash
       run: |
         echo "Publish release to Google Cloud Storage:"
-        gsutil cp -r ${{ inputs.path }}. gs://releng-pipeline-artifacts-dev/${{ github.event.repository.name }}/${{ github.event.number }}/Grafana-v${{ matrix.GRAFANA_VERSION }}
+        path=${{inputs.path}}
+        last_char=${path: -1}
+        [[ $last_char != "/" ]] && path="$path/";
+        gsutil cp -r "$path". gs://releng-pipeline-artifacts-dev/${{ github.event.repository.name }}/${{ github.event.number }}/Grafana-v${{ inputs.grafana-version }}
 
     - name: Write report link to summary
       shell: bash
-      run: echo '<a href="https://storage.googleapis.com/releng-pipeline-artifacts-dev/${{ github.event.repository.name }}/${{ github.event.number }}/Grafana-v${{ matrix.GRAFANA_VERSION }}/index.html">Browse the Playwright report</a>' >> $GITHUB_STEP_SUMMARY
+      run: echo '<a href="https://storage.googleapis.com/releng-pipeline-artifacts-dev/${{ github.event.repository.name }}/${{ github.event.number }}/Grafana-v${{ inputs.grafana-version }}/index.html">Browse the Playwright report</a>' >> $GITHUB_STEP_SUMMARY

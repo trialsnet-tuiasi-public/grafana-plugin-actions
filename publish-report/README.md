@@ -6,6 +6,10 @@ The report will be published to the following path inside the bucket: `<reposito
 
 ## Inputs
 
+### `grafana-version` (required)
+
+The Grafana version that was used in the test session that generated the report.
+
 ### `path` (optional)
 
 The path to the folder that contains the files that you would like to upload. If `path` argument is not provided, it's assumed that the report is in the `playwright-report` folder which is the default report output path for Playwright.
@@ -20,6 +24,8 @@ A Playwright report is only generated in case Playwright tests were executed, so
 - name: Publish report to GCS
 if: ${{ (always() && steps.run-tests.outcome == 'success') || (failure() && steps.run-tests.outcome == 'failure') && github.event.organization.login == 'grafana' }}
 uses: grafana/plugin-actions/publish-report@main
+with:
+    grafana-version: ${{ matrix.GRAFANA_IMAGE.VERSION }}
 ```
 
 ### Using a custom report path.
@@ -29,5 +35,6 @@ uses: grafana/plugin-actions/publish-report@main
 if: ${{ (always() && steps.run-tests.outcome == 'success') || (failure() && steps.run-tests.outcome == 'failure') && github.event.organization.login == 'grafana' }}
 uses: grafana/plugin-actions/publish-report@main
 with:
+    grafana-version: ${{ matrix.GRAFANA_IMAGE.VERSION }}
     directory: packages/grafana-datasource/playwright-report/
 ```
