@@ -2,10 +2,11 @@ const fs = require('fs/promises');
 const core = require('@actions/core');
 const semver = require('semver');
 const path = require('path');
+const npmToDockerImage = require('./npm-to-docker-image');
 
 const VersionResolverTypeInput = 'version-resolver-type';
 const MatrixOutput = 'matrix';
-const VERSIONS_LIMIT = 6;
+const VERSIONS_LIMIT = 5;
 
 const VersionResolverTypes = {
   PluginGrafanaDependency: 'plugin-grafana-dependency',
@@ -21,7 +22,7 @@ async function run() {
       return;
     }
 
-    let output = [];
+    let versions = [];
     switch (versionResolverType) {
       case VersionResolverTypes.VersionSupportPolicy:
         const currentMajorVersion = availableGrafanaVersions[0].major;
@@ -31,10 +32,10 @@ async function run() {
             break;
           }
           if (currentMajorVersion === grafanaVersion.major) {
-            output.push(grafanaVersion.version);
+            versions.push(grafanaVersion.version);
           }
           if (previousMajorVersion === grafanaVersion.major) {
-            output.push(grafanaVersion.version);
+            versions.push(grafanaVersion.version);
             break;
           }
         }
@@ -45,17 +46,29 @@ async function run() {
           if (semver.gt(pluginDependency, grafanaVersion.version)) {
             break;
           }
-          output.push(grafanaVersion.version);
+          versions.push(grafanaVersion.version);
         }
     }
 
     if (versionResolverType === VersionResolverTypes.PluginGrafanaDependency) {
-      // limit the number of versions to 6
-      output = evenlyPickVersions(output, VERSIONS_LIMIT);
+      // limit the number of versions to avoid starting too many jobs
+      versions = evenlyPickVersions(versions, VERSIONS_LIMIT);
     }
 
-    console.log('Resolved versions: ', output);
-    core.setOutput(MatrixOutput, JSON.stringify(output));
+    // official grafana images
+    const images = versions.map((version) => ({
+      name: 'grafana',
+      version,
+    }));
+
+    // get the most recent grafana-dev image
+    const tag = await npmToDockerImage({ core });
+    if (tag) {
+      images.unshift({ name: 'grafana-dev', version: tag });
+    }
+
+    console.log('Resolved images: ', images);
+    core.setOutput(MatrixOutput, JSON.stringify(images));
   } catch (error) {
     core.setFailed(error.message);
   }
