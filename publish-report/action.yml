@@ -28,7 +28,7 @@ runs:
       shell: bash
       run: |
         echo "Publish release to Google Cloud Storage:"
-        gsutil cp -r ${{ inputs.directory }}. gs://releng-pipeline-artifacts-dev/${{ github.event.repository.name }}/${{ github.event.number }}/Grafana-v${{ matrix.GRAFANA_VERSION }}
+        gsutil cp -r ${{ inputs.path }}. gs://releng-pipeline-artifacts-dev/${{ github.event.repository.name }}/${{ github.event.number }}/Grafana-v${{ matrix.GRAFANA_VERSION }}
 
     - name: Write report link to summary
       shell: bash
