@@ -2,7 +2,13 @@
 
 This Action resolves what Grafana image names and versions to use when E2E testing a Grafana plugin in a Github Action.
 
-## Features
+## Inputs
+
+### `skip-grafana-dev-image`
+
+By default, this actions resolves an image for the latest build of the main branch in Grafana. If you don't want to include the `grafana-dev` image in your test matrix, you can opt-out on it by setting the `skip-grafana-dev-image` to `true`.
+
+### `version-resolver-type`
 
 The action supports two modes.
 
