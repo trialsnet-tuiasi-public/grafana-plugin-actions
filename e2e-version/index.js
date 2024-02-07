@@ -16,7 +16,7 @@ const VersionResolverTypes = {
 
 async function run() {
   try {
-    const skipGrafanaDevImage = core.getInput(SkipGrafanaDevImageInput);
+    const skipGrafanaDevImage = core.getBooleanInput(SkipGrafanaDevImageInput);
     const versionResolverType = core.getInput(VersionResolverTypeInput) || VersionResolverTypes.PluginGrafanaDependency;
     const availableGrafanaVersions = await getGrafanaStableMinorVersions();
     if (availableGrafanaVersions.length === 0) {
@@ -63,7 +63,7 @@ async function run() {
       version,
     }));
 
-    if (skipGrafanaDevImage !== 'true') {
+    if (!skipGrafanaDevImage) {
       // get the most recent grafana-dev image
       const tag = await npmToDockerImage({ core });
       if (tag) {
