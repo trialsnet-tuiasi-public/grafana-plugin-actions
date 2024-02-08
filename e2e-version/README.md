@@ -1,49 +1,89 @@
 # E2E Grafana version resolver
 
-This Action resolves what versions of Grafana to use when E2E testing a Grafana plugin in a Github Action.
+This Action resolves what Grafana image names and versions to use when E2E testing a Grafana plugin in a Github Action.
 
-## Features
+## Inputs
+
+### `skip-grafana-dev-image`
+
+By default, this actions resolves an image for the latest build of the main branch in Grafana. If you don't want to include the `grafana-dev` image in your test matrix, you can opt-out on it by setting the `skip-grafana-dev-image` to `true`.
+
+### `version-resolver-type`
 
 The action supports two modes.
 
 **plugin-grafana-dependency (default)**
-The will return all the latest patch release of every minor version of Grafana since the version that was specified as grafanaDependency in the plugin.json. This requires the plugin.json file to be placed in the `<root>/src` directory.
+The will return the most recent grafana-dev image and all the latest patch release of every minor version of Grafana since the version that was specified as grafanaDependency in the plugin.json. This requires the plugin.json file to be placed in the `<root>/src` directory. To avoid starting too many jobs, to output will be capped 6 versions.
 
 ### Example
 
-At the time of writing, the most recent release of Grafana is 10.2.2. If the plugin has specified >=8.0.0 as `grafanaDependency` in the plugin.json file, the output would be:
+At the time of writing, the most recent release of Grafana is 10.3.1. If the plugin has specified >=8.0.0 as `grafanaDependency` in the plugin.json file, the output would be:
 
 ```json
 [
-  "10.2.2",
-  "10.1.5",
-  "10.0.9",
-  "9.5.14",
-  "9.4.17",
-  "9.3.16",
-  "9.2.20",
-  "9.1.8",
-  "9.0.8",
-  "8.5.27",
-  "8.4.11",
-  "8.3.11",
-  "8.2.7",
-  "8.1.8",
-  "8.0.7"
+  {
+    "name": "grafana-dev",
+    "version": "10.4.0-157931"
+  },
+  {
+    "name": "grafana",
+    "version": "10.3.1"
+  },
+  {
+    "name": "grafana",
+    "version": "10.0.10"
+  },
+  {
+    "name": "grafana",
+    "version": "9.2.20"
+  },
+  {
+    "name": "grafana",
+    "version": "8.4.11"
+  },
+  {
+    "name": "grafana",
+    "version": "8.1.8"
+  }
 ]
 ```
 
 Please note that the output changes as new versions of Grafana are being released.
 
 **version-support-policy**
-This will resolve versions according to Grafana's plugin compatibility support policy. Specifically, it retrieves the latest patch release for each minor version within the current major version of Grafana. Additionally, it includes the most recent release for the latest minor version of the previous major Grafana version.```
+Except for resolving the most recent grafana-dev image, this will resolve versions according to Grafana's plugin compatibility support policy. Specifically, it retrieves the latest patch release for each minor version within the current major version of Grafana. Additionally, it includes the most recent release for the latest minor version of the previous major Grafana version.```
 
 ### Example
 
 At the time of writing, the most recent release of Grafana is 10.2.2. The output for `version-support-policy` would be:
 
 ```json
-["10.2.2", "10.1.5", "10.0.9", "9.5.14"]
+[
+  {
+    "name": "grafana-dev",
+    "version": "10.4.0-157931"
+  },
+  {
+    "name": "grafana",
+    "version": "10.3.1"
+  },
+  {
+    "name": "grafana",
+    "version": "10.2.3"
+  },
+  {
+    "name": "grafana",
+    "version": "10.1.6"
+  },
+  {
+    "name": "grafana",
+    "version": "10.0.10"
+  },
+  {
+    "name": "grafana",
+    "version": "9.5.15"
+  }
+]
 ```
 
 ### Output
