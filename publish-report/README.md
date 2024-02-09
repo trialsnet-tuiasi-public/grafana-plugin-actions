@@ -1,5 +1,7 @@
 # Publish Playwright report
 
+> **_IMPORTANT:_** This action is only for repositories under the `grafana` organisation.
+
 This Action publishes Playwright reports to the `releng-pipeline-artifacts-dev` bucket in GCS. It authenticates to GCP using the `artifacts-uploader-service-account` service account secret which is defined in Vault. Only repositories within the Grafana organization has permissions to pull this secret, so this Action is not usable for respositories outside the organization.
 
 The report will be published to the following path inside the bucket: `<repository-name>/<pr-number>/<grafana-version>/index.html`. If the report was successfully published, a link to the report is added to the Github workflow summary.
