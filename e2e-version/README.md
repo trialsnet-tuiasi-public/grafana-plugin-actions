@@ -100,7 +100,7 @@ on:
   pull_request:
 
 jobs:
-  setup-matrix:
+  resolve-versions:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.resolve-versions.outputs.matrix }}
@@ -115,7 +115,7 @@ jobs:
           version-resolver-type: plugin-grafana-dependency
 
   playwright-tests:
-    needs: setup-matrix
+    needs: resolve-versions
     strategy:
       matrix:
         # use matrix from output in previous job
@@ -138,7 +138,7 @@ on:
   pull_request:
 
 jobs:
-  setup-matrix:
+  resolve-versions:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.resolve-versions.outputs.matrix }}
@@ -153,7 +153,7 @@ jobs:
           version-resolver-type: version-support-policy
 
   playwright-tests:
-    needs: setup-matrix
+    needs: resolve-versions
     strategy:
       matrix:
         # use matrix from output in previous job
