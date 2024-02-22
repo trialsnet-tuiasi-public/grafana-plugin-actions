@@ -57,9 +57,9 @@ async function run() {
       versions = evenlyPickVersions(versions, VERSIONS_LIMIT);
     }
 
-    // official grafana images
+    // official grafana-enterprise image
     const images = versions.map((version) => ({
-      name: 'grafana',
+      name: 'grafana-enterprise',
       version,
     }));
 

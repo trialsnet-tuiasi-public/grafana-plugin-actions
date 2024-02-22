@@ -13,7 +13,7 @@ By default, this actions resolves an image for the latest build of the main bran
 The action supports two modes.
 
 **plugin-grafana-dependency (default)**
-The will return the most recent grafana-dev image and all the latest patch release of every minor version of Grafana since the version that was specified as grafanaDependency in the plugin.json. This requires the plugin.json file to be placed in the `<root>/src` directory. To avoid starting too many jobs, to output will be capped 6 versions.
+The will return the most recent grafana-dev image and all the latest patch release of every minor version of Grafana Enterprise since the version that was specified as grafanaDependency in the plugin.json. This requires the plugin.json file to be placed in the `<root>/src` directory. To avoid starting too many jobs, to output will be capped 6 versions.
 
 ### Example
 
@@ -26,23 +26,23 @@ At the time of writing, the most recent release of Grafana is 10.3.1. If the plu
     "version": "10.4.0-157931"
   },
   {
-    "name": "grafana",
+    "name": "grafana-enterprise",
     "version": "10.3.1"
   },
   {
-    "name": "grafana",
+    "name": "grafana-enterprise",
     "version": "10.0.10"
   },
   {
-    "name": "grafana",
+    "name": "grafana-enterprise",
     "version": "9.2.20"
   },
   {
-    "name": "grafana",
+    "name": "grafana-enterprise",
     "version": "8.4.11"
   },
   {
-    "name": "grafana",
+    "name": "grafana-enterprise",
     "version": "8.1.8"
   }
 ]
@@ -64,23 +64,23 @@ At the time of writing, the most recent release of Grafana is 10.2.2. The output
     "version": "10.4.0-157931"
   },
   {
-    "name": "grafana",
+    "name": "grafana-enterprise",
     "version": "10.3.1"
   },
   {
-    "name": "grafana",
+    "name": "grafana-enterprise",
     "version": "10.2.3"
   },
   {
-    "name": "grafana",
+    "name": "grafana-enterprise",
     "version": "10.1.6"
   },
   {
-    "name": "grafana",
+    "name": "grafana-enterprise",
     "version": "10.0.10"
   },
   {
-    "name": "grafana",
+    "name": "grafana-enterprise",
     "version": "9.5.15"
   }
 ]
@@ -100,7 +100,7 @@ on:
   pull_request:
 
 jobs:
-  setup-matrix:
+  resolve-versions:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.resolve-versions.outputs.matrix }}
@@ -115,16 +115,18 @@ jobs:
           version-resolver-type: plugin-grafana-dependency
 
   playwright-tests:
-    needs: setup-matrix
+    needs: resolve-versions
     strategy:
       matrix:
         # use matrix from output in previous job
-        GRAFANA_VERSION: ${{fromJson(needs.setup-matrix.outputs.matrix)}}
+        GRAFANA_IMAGE: ${{fromJson(needs.resolve-versions.outputs.matrix)}}
     runs-on: ubuntu-latest
     steps:
       ...
       - name: Start Grafana
-        run: docker run --rm -d -p 3000:3000 --name=grafana grafana/grafana:${{ matrix.GRAFANA_VERSION }}
+        run: |
+          docker-compose pull
+          GRAFANA_VERSION=${{ matrix.GRAFANA_IMAGE.VERSION }} GRAFANA_IMAGE=${{ matrix.GRAFANA_IMAGE.NAME }} docker-compose up -d
       ...
 ```
 
@@ -136,7 +138,7 @@ on:
   pull_request:
 
 jobs:
-  setup-matrix:
+  resolve-versions:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.resolve-versions.outputs.matrix }}
@@ -151,16 +153,18 @@ jobs:
           version-resolver-type: version-support-policy
 
   playwright-tests:
-    needs: setup-matrix
+    needs: resolve-versions
     strategy:
       matrix:
         # use matrix from output in previous job
-        GRAFANA_VERSION: ${{fromJson(needs.setup-matrix.outputs.matrix)}}
+        GRAFANA_IMAGE: ${{fromJson(needs.resolve-versions.outputs.matrix)}}
     runs-on: ubuntu-latest
     steps:
       ...
       - name: Start Grafana
-        run: docker run --rm -d -p 3000:3000 --name=grafana grafana/grafana:${{ matrix.GRAFANA_VERSION }}
+        run: |
+          docker-compose pull
+          GRAFANA_VERSION=${{ matrix.GRAFANA_IMAGE.VERSION }} GRAFANA_IMAGE=${{ matrix.GRAFANA_IMAGE.NAME }} docker-compose up -d
       ...
 ```
 
