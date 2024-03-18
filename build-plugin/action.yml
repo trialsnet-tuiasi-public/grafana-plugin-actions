@@ -1,6 +1,14 @@
 name: "Grafana Build Plugin"
 description: "Builds a Grafana plugin"
 
+outputs:
+  archive:
+    description: "The path to the plugin archive (zip)."
+    value: ${{ steps.metadata.outputs.archive }}
+  archive-sha1sum:
+    description: "The path to the plugin archive sha1sum."
+    value: ${{ steps.metadata.outputs.archive-sha1sum }}
+
 inputs:
   token:
     description: "Token for the repository. Can be passed in using `{{ secrets.GITHUB_TOKEN }}`."
