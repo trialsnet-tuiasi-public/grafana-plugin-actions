@@ -39,4 +39,4 @@ runs:
 
     - name: Write report link to summary
       shell: bash
-      run: echo '<a href="https://storage.googleapis.com/releng-pipeline-artifacts-dev/${{ github.event.repository.name }}/${{ github.event.number }}/Grafana-v${{ inputs.grafana-version }}/index.html">Browse the Playwright report</a>' >> $GITHUB_STEP_SUMMARY
+      run: echo '<a href="https://storage.googleapis.com/releng-pipeline-artifacts-dev/${{ github.event.repository.name }}/${{ github.event.number }}/Grafana-v${{ inputs.grafana-version }}/index.html">Browse the Playwright report for Grafana-v${{ inputs.grafana-version }}</a>' >> $GITHUB_STEP_SUMMARY
