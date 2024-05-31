@@ -13,7 +13,7 @@ By default, this actions resolves an image for the latest build of the main bran
 The action supports two modes.
 
 **plugin-grafana-dependency (default)**
-The will return the most recent grafana-dev image and all the latest patch release of every minor version of Grafana Enterprise since the version that was specified as grafanaDependency in the plugin.json. This requires the plugin.json file to be placed in the `<root>/src` directory. To avoid starting too many jobs, to output will be capped 6 versions.
+The will return the most recent grafana-dev image and all the latest patch release of every minor version of Grafana Enterprise that satisfies the range specified in the [dependencies.grafanaDependency](https://grafana.com/developers/plugin-tools/reference/plugin-json#properties-1) property in plugin.json. This requires the plugin.json file to be placed in the `<root>/src` directory. To avoid starting too many jobs, to output will be capped 6 versions.
 
 ### Example
 
@@ -175,3 +175,7 @@ npm i
 #before pushing to main
 npm run bundle
 ```
+
+### `grafana-dependency`
+
+When using the `plugin-grafana-dependency` resolver type, you can optionally use the `grafana-dependency` input to pass a semver range of supported Grafana versions to test against. If this input is provided, the [dependencies.grafanaDependency](https://grafana.com/developers/plugin-tools/reference/plugin-json#properties-1) property in plugin.json will be ignored.
