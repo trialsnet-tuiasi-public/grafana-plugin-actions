@@ -141,3 +141,10 @@ async function getPluginGrafanaDependencyFromPluginJson() {
   return json.dependencies.grafanaDependency;
 }
 run();
+
+module.exports = {
+  run,
+  VersionResolverTypeInput,
+  VersionResolverTypes,
+  GrafanaDependencyInput,
+};
