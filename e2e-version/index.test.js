@@ -14,7 +14,7 @@ jest.mock('@actions/core', () => ({
   getBooleanInput: jest.fn(),
 }));
 
-describe('versions resolved for plugin-grafana-dependency mode', () => {
+describe('plugin-grafana-dependency mode', () => {
   it.each([
     {
       grafanaDependency: '>=10.2.0',

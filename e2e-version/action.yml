@@ -20,7 +20,7 @@ inputs:
       - version-support-policy
   grafana-dependency:
     required: false
-    description: 'Optionally, use this input to pass a semver range of supported Grafana versions to test against. This is only used when version-resolver-type is plugin-grafana-dependency. If not provided, the action will try to read grafanaDependency the plugin.json file.'
+    description: 'Optionally, use this input to pass a semver range of supported Grafana versions to test against. This is only used when version-resolver-type is plugin-grafana-dependency. If not provided, the action will try to read grafanaDependency from the plugin.json file.'
     type: string
 
 output:
