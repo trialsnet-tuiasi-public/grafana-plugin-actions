@@ -1,11 +1,10 @@
-const fs = require('fs/promises');
 const core = require('@actions/core');
 const semver = require('semver');
-const path = require('path');
 const npmToDockerImage = require('./npm-to-docker-image');
 
 const SkipGrafanaDevImageInput = 'skip-grafana-dev-image';
 const VersionResolverTypeInput = 'version-resolver-type';
+const GrafanaDependencyInput = 'grafana-dependency';
 const MatrixOutput = 'matrix';
 const VERSIONS_LIMIT = 5;
 
@@ -17,6 +16,7 @@ const VersionResolverTypes = {
 async function run() {
   try {
     const skipGrafanaDevImage = core.getBooleanInput(SkipGrafanaDevImageInput);
+    const grafanaDependency = core.getInput(GrafanaDependencyInput);
     const versionResolverType = core.getInput(VersionResolverTypeInput) || VersionResolverTypes.PluginGrafanaDependency;
     const availableGrafanaVersions = await getGrafanaStableMinorVersions();
     if (availableGrafanaVersions.length === 0) {
@@ -43,12 +43,11 @@ async function run() {
         }
         break;
       default:
-        const pluginDependency = await getPluginGrafanaDependency();
+        const pluginDependency = grafanaDependency ?? (await getPluginGrafanaDependencyFromPluginJson());
         for (const grafanaVersion of availableGrafanaVersions) {
-          if (semver.gt(pluginDependency, grafanaVersion.version)) {
-            break;
+          if (semver.satisfies(grafanaVersion.version, pluginDependency)) {
+            versions.push(grafanaVersion.version);
           }
-          versions.push(grafanaVersion.version);
         }
     }
 
@@ -73,6 +72,7 @@ async function run() {
 
     console.log('Resolved images: ', images);
     core.setOutput(MatrixOutput, JSON.stringify(images));
+    return images;
   } catch (error) {
     core.setFailed(error.message);
   }
@@ -86,7 +86,7 @@ async function run() {
  * @param {number} limit
  **/
 function evenlyPickVersions(allItems, limit) {
-  if (allItems.length <= 2 && limit >= allItems.length) {
+  if (limit >= allItems.length) {
     return allItems;
   }
 
@@ -131,14 +131,20 @@ async function getGrafanaStableMinorVersions() {
   return Array.from(latestMinorVersions).map(([_, semver]) => semver);
 }
 
-async function getPluginGrafanaDependency() {
+async function getPluginGrafanaDependencyFromPluginJson() {
   const file = await fs.readFile(path.resolve(path.join(process.cwd(), 'src'), 'plugin.json'), 'utf8');
   const json = JSON.parse(file);
   if (!json.dependencies.grafanaDependency) {
     throw new Error('Could not find plugin grafanaDependency');
   }
 
-  return semver.coerce(json.dependencies.grafanaDependency).version;
+  return json.dependencies.grafanaDependency;
 }
-
 run();
+
+module.exports = {
+  run,
+  VersionResolverTypeInput,
+  VersionResolverTypes,
+  GrafanaDependencyInput,
+};
