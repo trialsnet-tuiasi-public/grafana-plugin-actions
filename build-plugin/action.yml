@@ -14,6 +14,10 @@ inputs:
     description: "[deprecated] Grafana API Key to sign a plugin. Prefer `policy_token`."
     required: false
     default: ""
+  rootUrls:
+    description: "Comma separated list of root URLs to sign the plugin for."
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -66,7 +70,13 @@ runs:
       shell: bash
 
     - name: Sign plugin
-      run: ${{ github.action_path }}/pm.sh sign
+      # run: ${{ github.action_path }}/pm.sh sign
+      run: |
+        if [ "${{ inputs.rootUrls }}" != "" ]; then
+          ${{ github.action_path }}/pm.sh sign -- --rootUrls "${{ inputs.rootUrls }}"
+        else
+          ${{ github.action_path }}/pm.sh sign
+        fi
       shell: bash
       env:
         GRAFANA_ACCESS_POLICY_TOKEN: ${{ inputs.policy_token }}
